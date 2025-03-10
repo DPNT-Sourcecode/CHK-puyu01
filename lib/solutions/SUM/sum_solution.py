@@ -9,5 +9,3 @@ def compute(x, y):
             raise ValueError("Both parameters must be between 0 and 100")
     
     return sum(x, y)
-
-
