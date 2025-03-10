@@ -12,10 +12,10 @@ def checkout(skus):
     # Global Variables
     prices = {
         'A': 50, 'B': 30, 'C': 20, 'D': 15, 'E': 40, 'F': 10,
-        'G': 20, 'H': 10, 'I': 35, 'J': 60, 'K': 80, 'L': 90,
+        'G': 20, 'H': 10, 'I': 35, 'J': 60, 'K': 70, 'L': 90,
         'M': 15, 'N': 40, 'O': 10, 'P': 50, 'Q': 30, 'R': 50,
-        'S': 30, 'T': 20, 'U': 40, 'V': 50, 'W': 20, 'X': 90,
-        'Y': 10, 'Z': 50
+        'S': 20, 'T': 20, 'U': 40, 'V': 50, 'W': 20, 'X': 17,
+        'Y': 20, 'Z': 21
     }
 
     # Special Multi-Price Offers
@@ -23,18 +23,52 @@ def checkout(skus):
         'A': [(5, 200), (3, 130)],
         'B': [(2, 45)],
         'H': [(10, 80), (5, 45)],
-        'K': [(2, 150)],
+        'K': [(2, 120)],
         'P': [(5, 200)],
         'Q': [(3, 80)],
         'V': [(3, 130), (2, 90)],
     }
+    
+    # Group Discount Items
+    group_discount_items = ['S', 'T', 'X', 'Y', 'Z']
+    group_discount_size = 3
+    group_discount_price = 45
     
     # Count the number of occurrences of each item
     item_counts = {}
     for item in skus:
         item_counts[item] = item_counts.get(item, 0) + 1
         
-    # Process "get free item" offers first
+    # Process Group Discounts
+    group_discount_count = 0
+    group_items_prices = []
+    
+    # Collect items eligible for group discount
+    for item in group_discount_items:
+        if item in item_counts:
+            count = item_counts[item]
+            group_items_count += count
+            # add ech item price to list repeated by count
+            group_items_prices.extended([prices[item]] * count)
+            
+    # Apply group discounts
+    group_discount_count = group_items_count // group_discount_size
+    remaining_group_items = group_items_count % group_discount_size
+    
+    # calculate how many of ech group item to remove after the discount
+    if group_discount_count > 0:
+        items_to_remove = group_discount_count * group_discount_size
+        
+    # Calculate item count after group discount
+    for item in group_discount_items:
+        if item in item_counts and items_to_remove > 0:
+            remove_count = min(item_counts[item], items_to_remove)
+            item_counts[item] -= remove_count
+            items_to_remove -= remove_count
+            if item_counts[item] == 0:
+                del item_counts[item]
+        
+    # Process "get free item" offers
     
     # 2E get one B free 
     if 'E' in item_counts and 'B' in item_counts:
@@ -62,6 +96,9 @@ def checkout(skus):
         item_counts['U'] -= free_u_count
         
     total = 0
+    
+    # group discount total
+    total += group_discount_count * group_discount_price
     
     # Calculate the total price considering special offers
     for item, count in item_counts.items():
