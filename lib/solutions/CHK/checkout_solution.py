@@ -60,6 +60,7 @@ def checkout(skus):
     remaining_group_items = group_items_count % group_discount_size
     
     # calculate how many of each group item to remove after the discount
+    items_to_remove = 0
     if group_discount_count > 0:
         items_to_remove = group_discount_count * group_discount_size
         
@@ -117,4 +118,5 @@ def checkout(skus):
             total += count * prices[item]
     
     return total
+
 
