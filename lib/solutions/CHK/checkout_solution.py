@@ -41,7 +41,7 @@ def checkout(skus):
         
     # Process Group Discounts
     group_discount_count = 0
-    groups_items_count = 0
+    group_items_count = 0
     group_items_prices = []
     
     # Collect items eligible for group discount
@@ -117,3 +117,4 @@ def checkout(skus):
             total += count * prices[item]
     
     return total
+
