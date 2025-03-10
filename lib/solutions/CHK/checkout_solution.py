@@ -41,6 +41,7 @@ def checkout(skus):
         
     # Process Group Discounts
     group_discount_count = 0
+    groups_items_count = 0
     group_items_prices = []
     
     # Collect items eligible for group discount
@@ -49,13 +50,16 @@ def checkout(skus):
             count = item_counts[item]
             group_items_count += count
             # add ech item price to list repeated by count
-            group_items_prices.extended([prices[item]] * count)
+            group_items_prices.extend([prices[item]] * count)
+            
+    # sort prices in decending order for customers
+    group_items_prices.sort(reverse=True)
             
     # Apply group discounts
     group_discount_count = group_items_count // group_discount_size
     remaining_group_items = group_items_count % group_discount_size
     
-    # calculate how many of ech group item to remove after the discount
+    # calculate how many of each group item to remove after the discount
     if group_discount_count > 0:
         items_to_remove = group_discount_count * group_discount_size
         
