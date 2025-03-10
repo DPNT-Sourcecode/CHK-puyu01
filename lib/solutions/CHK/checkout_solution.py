@@ -26,7 +26,7 @@ def checkout(skus):
         'K': [(2, 120)],
         'P': [(5, 200)],
         'Q': [(3, 80)],
-        'V': [(3, 130), (2, 90)],
+        'V': [(3, 130), (2, 90)]
     }
     
     # Group Discount Items
@@ -39,40 +39,32 @@ def checkout(skus):
     for item in skus:
         item_counts[item] = item_counts.get(item, 0) + 1
         
-    # Process Group Discounts
-    group_discount_count = 0
-    group_items_count = 0
-    group_items = []  # Store (item, price) tuples
-    
-    # Collect items eligible for group discount
+    # Process Group Discounts - NEW IMPLEMENTATION
+    # First, extract all items eligible for group discount
+    group_items = []
     for item in group_discount_items:
         if item in item_counts:
-            for _ in range(item_counts[item]):
-                group_items.append((item, prices[item]))
-                group_items_count += 1
+            count = item_counts[item]
+            for _ in range(count):
+                group_items.append(item)
+            # Remove these items from the count for now
+            del item_counts[item]
     
-    # Sort items by price in descending order
-    group_items.sort(key=lambda x: (-x[1], x[0]))  # Sort by price (desc), then by item code
+    # Sort by descending price to maximize savings
+    group_items.sort(key=lambda x: -prices[x])
     
     # Apply group discounts
-    group_discount_count = group_items_count // group_discount_size
+    total_group_price = 0
+    i = 0
+    while i + group_discount_size <= len(group_items):
+        total_group_price += group_discount_price
+        i += group_discount_size
     
-    # Remove items that are part of a discount group
-    if group_discount_count > 0:
-        # Create a list of items to discount
-        items_to_discount = group_items[:group_discount_count * group_discount_size]
-        
-        # Track how many of each item to remove
-        discount_counts = {}
-        for item, _ in items_to_discount:
-            discount_counts[item] = discount_counts.get(item, 0) + 1
-        
-        # Apply the discount by updating item_counts
-        for item, count in discount_counts.items():
-            item_counts[item] -= count
-            if item_counts[item] == 0:
-                del item_counts[item]
-        
+    # Add remaining items back to item_counts
+    for j in range(i, len(group_items)):
+        item = group_items[j]
+        item_counts[item] = item_counts.get(item, 0) + 1
+    
     # Process "get free item" offers
     
     # 2E get one B free 
@@ -100,10 +92,8 @@ def checkout(skus):
         free_u_count = item_counts['U'] // 4
         item_counts['U'] -= free_u_count
         
-    total = 0
-    
-    # group discount total
-    total += group_discount_count * group_discount_price
+    # Calculate total price
+    total = total_group_price  # Start with group discount total
     
     # Calculate the total price considering special offers
     for item, count in item_counts.items():
@@ -118,6 +108,7 @@ def checkout(skus):
             total += count * prices[item]
     
     return total
+
 
 
 
