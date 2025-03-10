@@ -42,34 +42,34 @@ def checkout(skus):
     # Process Group Discounts
     group_discount_count = 0
     group_items_count = 0
-    group_items_prices = []
+    group_items = []  # Store (item, price) tuples
     
     # Collect items eligible for group discount
     for item in group_discount_items:
         if item in item_counts:
-            count = item_counts[item]
-            group_items_count += count
-            # add ech item price to list repeated by count
-            group_items_prices.extend([prices[item]] * count)
-            
-    # sort prices in decending order for customers
-    group_items_prices.sort(reverse=True)
-            
+            for _ in range(item_counts[item]):
+                group_items.append((item, prices[item]))
+                group_items_count += 1
+    
+    # Sort items by price in descending order
+    group_items.sort(key=lambda x: (-x[1], x[0]))  # Sort by price (desc), then by item code
+    
     # Apply group discounts
     group_discount_count = group_items_count // group_discount_size
-    remaining_group_items = group_items_count % group_discount_size
     
-    # calculate how many of each group item to remove after the discount
-    items_to_remove = 0
+    # Remove items that are part of a discount group
     if group_discount_count > 0:
-        items_to_remove = group_discount_count * group_discount_size
+        # Create a list of items to discount
+        items_to_discount = group_items[:group_discount_count * group_discount_size]
         
-    # Calculate item count after group discount
-    for item in group_discount_items:
-        if item in item_counts and items_to_remove > 0:
-            remove_count = min(item_counts[item], items_to_remove)
-            item_counts[item] -= remove_count
-            items_to_remove -= remove_count
+        # Track how many of each item to remove
+        discount_counts = {}
+        for item, _ in items_to_discount:
+            discount_counts[item] = discount_counts.get(item, 0) + 1
+        
+        # Apply the discount by updating item_counts
+        for item, count in discount_counts.items():
+            item_counts[item] -= count
             if item_counts[item] == 0:
                 del item_counts[item]
         
@@ -118,5 +118,6 @@ def checkout(skus):
             total += count * prices[item]
     
     return total
+
 
 
