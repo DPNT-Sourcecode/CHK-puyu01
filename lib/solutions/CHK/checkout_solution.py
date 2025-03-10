@@ -7,7 +7,7 @@ def checkout(skus):
         skus = skus.upper()
     
     if not skus:
-        return -1
+        return 0
     
     #Validate if all characters are valid SKUs
     if not all(item in 'ABCD' for item in skus):
@@ -43,3 +43,4 @@ def checkout(skus):
         else:
             total += count * prices[item]
     return total
+
