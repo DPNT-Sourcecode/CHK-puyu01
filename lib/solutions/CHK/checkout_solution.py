@@ -1,5 +1,3 @@
-
-
 # noinspection PyUnusedLocal
 # skus = unicode string
 def checkout(skus):
@@ -7,8 +5,8 @@ def checkout(skus):
     if not skus:
         return 0
     
-    #Validate if all characters are valid SKUs
-    if not all(item in 'ABCDE' for item in skus):
+    # Validate if all characters are valid SKUs
+    if not all(item in "ABCDE" for item in skus):  # Re-typed with quotes
         return -1
 
     # Global Variables
@@ -26,7 +24,7 @@ def checkout(skus):
         'B': [(2, 45)]
     }
     
-    # Count the number of ocurrences of each item
+    # Count the number of occurrences of each item
     item_counts = {}
     for item in skus:
         item_counts[item] = item_counts.get(item, 0) + 1
@@ -43,11 +41,11 @@ def checkout(skus):
         if item in special_multiprice_offers:
             remaining_count = count
             for offer_qty, offer_price in special_multiprice_offers[item]:
-                   offer_count = remaining_count // offer_qty
-                   total += offer_count * offer_price
-                   remaining_count %= offer_qty
+                offer_count = remaining_count // offer_qty
+                total += offer_count * offer_price
+                remaining_count %= offer_qty
             total += remaining_count * prices[item]
-                   
         else:
             total += count * prices[item]
+    
     return total
