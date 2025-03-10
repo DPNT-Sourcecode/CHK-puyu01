@@ -1,3 +1,3 @@
-def compute():
-    # Your implementation here
-    pass
+# noinspection PyShadowingBuiltins,PyUnusedLocal
+def compute(x, y):
+    raise NotImplementedError()
