@@ -1,10 +1,15 @@
 
-skus = 'AAA'
+
 # noinspection PyUnusedLocal
 # skus = unicode string
 def checkout(skus):
     if not skus:
         return -1
+    
+    #Validate if all characters are valid SKUs
+    if not all(item in 'ABCD' for item in skus):
+        return -1
+    
     # Global Variables
     prices = {
         'A': 50,
@@ -17,8 +22,6 @@ def checkout(skus):
     special_offers = {
         'A': (3, 130),
         'B': (2, 45),
-        'C': (2, 38),
-        'D': (1, 15)
     }
     
     # Count the number of ocurrences of each item
@@ -37,6 +40,3 @@ def checkout(skus):
         else:
             total += count * prices[item]
     return total
-
-print(checkout(skus))
-    
