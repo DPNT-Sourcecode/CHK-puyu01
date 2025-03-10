@@ -6,7 +6,7 @@ def checkout(skus):
         return 0
     
     # Validate if all characters are valid SKUs
-    if not all(item in "ABCDE" for item in skus):  # Re-typed with quotes
+    if not all(item in "ABCDEF" for item in skus):  # Re-typed with quotes
         return -1
 
     # Global Variables
@@ -15,7 +15,8 @@ def checkout(skus):
         'B': 30,
         'C': 20,
         'D': 15,
-        'E': 40
+        'E': 40,
+        'F': 10
     }
 
     # Special Multi-Price Offers
@@ -33,6 +34,11 @@ def checkout(skus):
     if 'E' in item_counts and 'B' in item_counts:
         free_b_count = item_counts['E'] // 2
         item_counts['B'] = max(0, item_counts['B'] - free_b_count)
+        
+    #2F get one F free
+    if 'F' in item_counts:
+        free_f_count = item_counts['F'] // 3
+        item_counts['F'] -= free_f_count
         
     total = 0
     
