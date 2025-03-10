@@ -3,13 +3,16 @@
 # noinspection PyUnusedLocal
 # skus = unicode string
 def checkout(skus):
+    if skus is not None:
+        skus = skus.upper()
+    
     if not skus:
         return -1
     
     #Validate if all characters are valid SKUs
     if not all(item in 'ABCD' for item in skus):
         return -1
-    
+
     # Global Variables
     prices = {
         'A': 50,
