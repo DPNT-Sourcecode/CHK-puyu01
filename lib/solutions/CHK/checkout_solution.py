@@ -3,8 +3,6 @@
 # noinspection PyUnusedLocal
 # skus = unicode string
 def checkout(skus):
-    if skus is not None:
-        skus = skus.upper()
     
     if not skus:
         return 0
@@ -43,4 +41,5 @@ def checkout(skus):
         else:
             total += count * prices[item]
     return total
+
 
